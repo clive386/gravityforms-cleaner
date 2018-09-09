@@ -22,6 +22,18 @@ add_action( 'plugins_loaded', array( 'GFForms_Cleaner', 'plugins_loaded' ) );
  */
 class GFForms_Cleaner {
 
+	/*
+	 * @var string $plugin_directory The full path to the root of the plugin
+	 * @since 0.0.1
+	 */
+	public static $plugin_directory;
+
+	/*
+	 * @var string $plugin_url The external URL path to the root of the plugin
+	 * @since 0.0.1
+	 */
+	public static $plugin_url;
+
 	/**
 	 * Set up the initial environment for our plugin
 	 *
@@ -31,6 +43,12 @@ class GFForms_Cleaner {
 	 * @return void
 	 */
 	public function plugins_loaded() {
+
+		// Define the plugin directory root
+		self::$plugin_directory = rtrim( __DIR__, '/' );
+
+		// Define the plugin URL root
+		self::$plugin_url = rtrim( plugin_dir_url( __FILE__ ), '/' );
 
 		// Get the details for the currently logged-in user
 		$user_info = wp_get_current_user();
@@ -58,7 +76,24 @@ class GFForms_Cleaner {
 
 			// Add the menu updater to the admin menu handler
 			add_action( 'admin_menu', array( 'GFForms_Cleaner', 'create_menu_entry' ) );
+
+			// Add any stylesheets or javascript files that need adding for the admin views
+			add_action( 'admin_enqueue_scripts', array( 'GFForms_Cleaner', 'admin_scripts' ) );
 		}
+	}
+
+	/**
+	 * Add any stylesheets or scripts that need adding for the admin views
+	 *
+	 * @since  0.0.1
+	 * @access public
+	 *
+	 * @return void
+	 */
+	public function admin_scripts() {
+
+		// Add the general admin css file
+		wp_enqueue_style( 'gfforms-cleaner-admin', self::$plugin_url . '/css/admin.css' );
 	}
 
 	/**
@@ -67,7 +102,7 @@ class GFForms_Cleaner {
 	 * @since  0.0.1
 	 * @access public
 	 *
-	 * @return void	 *
+	 * @return void
 	 */
 	public function create_menu_entry() {
 
@@ -99,7 +134,7 @@ class GFForms_Cleaner {
 	public function list_forms() {
 
 		// Include the list form class
-		require_once( 'includes/class-list-forms.php' );
+		require_once( self::$plugin_directory . '/includes/class-list-forms.php' );
 
 		// Instantiate our modified version of the form list view
 		$list_forms = new GFForms_Cleaner_List_Forms;
