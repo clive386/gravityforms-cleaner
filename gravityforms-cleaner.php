@@ -44,6 +44,11 @@ class GFForms_Cleaner {
 	 */
 	public function plugins_loaded() {
 
+		// If the Gravity Forms plugin isn't installed or loaded, then nothing here is useful; don't load anything!
+		if( ! class_exists( 'GFForms' ) ) {
+			return;
+		}
+
 		// Define the plugin directory root
 		self::$plugin_directory = rtrim( __DIR__, '/' );
 
