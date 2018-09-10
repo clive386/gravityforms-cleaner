@@ -1,3 +1,7 @@
 .forms_page_gfcleaner .row-actions span {
     color: #000000;
 }
+
+.forms_page_gfcleaner .tablenav .actions.bulkactions select {
+    max-width: 300px;
+}
