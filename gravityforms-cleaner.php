@@ -142,8 +142,15 @@ class GFForms_Cleaner {
 		// Include our custom table header
 		$list_forms->display_table_header();
 
-		// Process any current actions that need to be run
-		$list_forms->process_action();
+		// Process any current actions that need to be run;
+		// As a short-circuit, if the action returns false, then we don't want to display the form as it's asking for confirmation!
+		if( $list_forms->process_action() === false) {
+
+			// We must include the footer though!
+			$list_forms->display_table_footer();
+
+			return;
+		}
 
 		// Prepare the list of forms to be displayed
 		$list_forms->prepare_items();
